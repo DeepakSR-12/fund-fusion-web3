@@ -6,15 +6,32 @@ import { useStateContext } from "../context";
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
 
-  const { address, contract, getUserCampaigns } = useStateContext();
+  const { address, contract, getUserCampaigns, searchString } =
+    useStateContext();
 
   const fetchCampaigns = async () => {
     setIsLoading(true);
     const data = await getUserCampaigns();
     setCampaigns(data);
+    setFilteredCampaigns(data);
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (searchString) {
+      const filtered = campaigns.filter((obj) =>
+        Object.values(obj).some((val) =>
+          val.toString().toLowerCase().includes(searchString.toLowerCase())
+        )
+      );
+
+      setFilteredCampaigns(filtered);
+    } else {
+      setFilteredCampaigns(campaigns);
+    }
+  }, [searchString]);
 
   useEffect(() => {
     if (contract) fetchCampaigns();
@@ -24,7 +41,7 @@ const Profile = () => {
     <DisplayCampaigns
       title="My Campaigns"
       isLoading={isLoading}
-      campaigns={campaigns}
+      campaigns={filteredCampaigns}
     />
   );
 };

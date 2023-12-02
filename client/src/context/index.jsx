@@ -1,4 +1,4 @@
-import React, { useContext, createContext } from "react";
+import React, { useContext, createContext, useState } from "react";
 
 import {
   useAddress,
@@ -18,6 +18,8 @@ export const StateContextProvider = ({ children }) => {
     contract,
     "createCampaign"
   );
+
+  const [searchString, setSearchString] = useState("");
 
   const address = useAddress();
   const connect = useMetamask();
@@ -105,6 +107,8 @@ export const StateContextProvider = ({ children }) => {
         getUserCampaigns,
         donate,
         getDonations,
+        searchString,
+        setSearchString,
       }}
     >
       {children}
